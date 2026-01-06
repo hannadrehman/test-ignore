@@ -39,8 +39,7 @@ import shaka from "shaka-player";
 // Video URL constants
 // Local HLS playlist path (files should be in public/videos/screen/)
 const SCREEN_VIDEO_URL = "/videos/screen/master.m3u8";
-const WEBCAM_VIDEO_URL =
-  "https://content.jwplatform.com/manifests/vM7nH0Kl.m3u8";
+const WEBCAM_VIDEO_URL = "/videos/webcam/master.m3u8";
 
 // Video is 12 minutes = 720 seconds
 const VIDEO_DURATION = 720;
@@ -528,14 +527,17 @@ const OptimizedPlayerView = () => {
           // Determine if it's a screen or webcam screenshot
           // For now, all current screenshots are screen-related
           // Webcam screenshots would have different indicators
-          const isWebcam = event.type?.toLowerCase().includes("webcam") || 
-                          event.type?.toLowerCase().includes("face") ||
-                          incident.type === "face-detection";
+          const isWebcam =
+            event.type?.toLowerCase().includes("webcam") ||
+            event.type?.toLowerCase().includes("face") ||
+            incident.type === "face-detection";
           const isScreen = !isWebcam;
-          
-          if (mediaType === "all" || 
-              (mediaType === "screen" && isScreen) || 
-              (mediaType === "webcam" && isWebcam)) {
+
+          if (
+            mediaType === "all" ||
+            (mediaType === "screen" && isScreen) ||
+            (mediaType === "webcam" && isWebcam)
+          ) {
             screenshots.push({
               id: `${incident.id}-${event.time}`,
               time: event.time,
@@ -589,7 +591,6 @@ const OptimizedPlayerView = () => {
 
     return filtered;
   };
-
 
   // Fullscreen functionality
   const toggleFullscreen = () => {
@@ -1018,12 +1019,12 @@ const OptimizedPlayerView = () => {
                 <Settings className="w-5 h-5 text-gray-600" />
               </button>
               <div className="h-8 w-px bg-gray-300"></div>
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg">
-                  <User className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-700">
-                    Hanad ur Rehman
-                  </span>
-                </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg">
+                <User className="w-4 h-4 text-gray-600" />
+                <span className="text-sm font-medium text-gray-700">
+                  Hanad ur Rehman
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -1223,72 +1224,72 @@ const OptimizedPlayerView = () => {
                     </div>
                   </div>
 
-                    {/* Incident markers */}
-                    {incidents.map((incident) => (
-                      <div
-                        key={incident.id}
-                        className="incident-marker absolute top-0 h-full flex items-center cursor-pointer group z-10"
-                        style={{
-                          left: `${(incident.startTime / totalDuration) * 100}%`,
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          jumpToIncident(incident);
-                        }}
-                      >
-                        <div className="relative">
-                          <div
-                            className={`w-1 h-8 ${
-                              incident.severity === "critical"
-                                ? "bg-red-600"
-                                : "bg-gray-600"
-                            } group-hover:bg-gray-900 transition-colors shadow`}
-                          ></div>
-                          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-xl">
-                            <div className="font-semibold text-gray-900">
-                              {incident.title}
-                            </div>
-                            <div className="text-gray-600 text-xs">
-                              {incident.timeRange}
-                            </div>
+                  {/* Incident markers */}
+                  {incidents.map((incident) => (
+                    <div
+                      key={incident.id}
+                      className="incident-marker absolute top-0 h-full flex items-center cursor-pointer group z-10"
+                      style={{
+                        left: `${(incident.startTime / totalDuration) * 100}%`,
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        jumpToIncident(incident);
+                      }}
+                    >
+                      <div className="relative">
+                        <div
+                          className={`w-1 h-8 ${
+                            incident.severity === "critical"
+                              ? "bg-red-600"
+                              : "bg-gray-600"
+                          } group-hover:bg-gray-900 transition-colors shadow`}
+                        ></div>
+                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-xl">
+                          <div className="font-semibold text-gray-900">
+                            {incident.title}
+                          </div>
+                          <div className="text-gray-600 text-xs">
+                            {incident.timeRange}
                           </div>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
 
-                    {/* Sub-event markers */}
-                    {incidents.map((incident) =>
-                      incident.subEvents.map((event, eventIdx) => {
-                        const EventIcon = event.icon;
-                        return (
-                          <div
-                            key={`${incident.id}-${eventIdx}`}
-                            className="sub-event-marker absolute top-0 h-full flex items-center cursor-pointer group z-5"
-                            style={{
-                              left: `${(event.time / totalDuration) * 100}%`,
-                            }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setCurrentTime(event.time);
-                              setActiveIncident(incident.id);
-                            }}
-                          >
-                            <div className="w-px h-full bg-gray-400 group-hover:bg-gray-600 transition-colors"></div>
-                            <div className="absolute -top-7 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-lg pointer-events-none">
-                              <div className="flex items-center gap-1.5">
-                                <EventIcon className="w-3 h-3 text-gray-600" />
-                                <span className="font-medium text-gray-900">
-                                  {event.type}
-                                </span>
-                              </div>
-                              <div className="text-gray-500 text-xs mt-0.5">
-                                {formatTime(event.time)}
-                              </div>
+                  {/* Sub-event markers */}
+                  {incidents.map((incident) =>
+                    incident.subEvents.map((event, eventIdx) => {
+                      const EventIcon = event.icon;
+                      return (
+                        <div
+                          key={`${incident.id}-${eventIdx}`}
+                          className="sub-event-marker absolute top-0 h-full flex items-center cursor-pointer group z-5"
+                          style={{
+                            left: `${(event.time / totalDuration) * 100}%`,
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCurrentTime(event.time);
+                            setActiveIncident(incident.id);
+                          }}
+                        >
+                          <div className="w-px h-full bg-gray-400 group-hover:bg-gray-600 transition-colors"></div>
+                          <div className="absolute -top-7 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-lg pointer-events-none">
+                            <div className="flex items-center gap-1.5">
+                              <EventIcon className="w-3 h-3 text-gray-600" />
+                              <span className="font-medium text-gray-900">
+                                {event.type}
+                              </span>
+                            </div>
+                            <div className="text-gray-500 text-xs mt-0.5">
+                              {formatTime(event.time)}
                             </div>
                           </div>
-                        );
-                      })
-                    )}
+                        </div>
+                      );
+                    })
+                  )}
 
                   {/* Current time indicator - draggable */}
                   <div
@@ -1609,7 +1610,9 @@ const OptimizedPlayerView = () => {
                           <div className="flex items-center gap-3 text-xs">
                             <span className="flex items-center gap-1.5 text-gray-500">
                               <Clock className="w-3.5 h-3.5" />
-                              <span className="font-medium">{incident.timeRange}</span>
+                              <span className="font-medium">
+                                {incident.timeRange}
+                              </span>
                             </span>
                             <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
                             <span className="text-gray-600 font-medium">
@@ -1635,11 +1638,13 @@ const OptimizedPlayerView = () => {
                               }`}
                             >
                               <div className="flex items-center gap-2.5">
-                                <div className={`flex-shrink-0 p-1 rounded ${
-                                  event.critical
-                                    ? "bg-red-100"
-                                    : "bg-gray-100"
-                                }`}>
+                                <div
+                                  className={`flex-shrink-0 p-1 rounded ${
+                                    event.critical
+                                      ? "bg-red-100"
+                                      : "bg-gray-100"
+                                  }`}
+                                >
                                   <Icon
                                     className={`w-3.5 h-3.5 ${
                                       event.critical
@@ -1930,7 +1935,7 @@ const OptimizedPlayerView = () => {
                   </svg>
                 </button>
               </div>
-              
+
               {/* Tabs */}
               <div className="flex gap-2 border-b border-gray-200">
                 <button
@@ -1993,7 +1998,11 @@ const OptimizedPlayerView = () => {
                 <div className="text-center py-12 text-gray-500">
                   <Image className="w-16 h-16 text-gray-400 mx-auto mb-3" />
                   <p className="text-sm">
-                    No suspicious {screenshotTab === "screen" ? "screenshots" : "webcam images"} detected
+                    No suspicious{" "}
+                    {screenshotTab === "screen"
+                      ? "screenshots"
+                      : "webcam images"}{" "}
+                    detected
                   </p>
                 </div>
               )}
